@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-practice-app",
+  "version": "1.0.0",
+  "description": "Create for nodejs practice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trankhoadev/nodejs-practice-app.git"
+  },
+  "author": "Tran Anh Khoa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trankhoadev/nodejs-practice-app/issues"
+  },
+  "homepage": "https://github.com/trankhoadev/nodejs-practice-app#readme"
+}
