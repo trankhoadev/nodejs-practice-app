@@ -8,8 +8,10 @@ const logger = require("morgan");
 /* setup connect database */
 const connectDB = require("./config/db.config");
 
+/* setup all router here */
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+const authRouter = require("./routes/authRouter");
 
 /* Custom declare variable and import */
 const app = express();
@@ -22,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/auth", authRouter);
 
 app.use((req, res, next) => {
   const error = new Error("Uri not found!");

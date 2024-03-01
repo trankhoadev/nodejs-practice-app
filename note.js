@@ -1,50 +1,41 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const router = express.Router();
 
-if (!process.env.DB_MONGOOSE) {
-  throw new Error("DB_MONGOOSE environment variable is not defined!");
-}
-
-mongoose
-  .connect(process.env.DB_MONGOOSE, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connect to Mongoose successfully!");
-  })
-  .catch((err) => {
-    console.error("Error when connect to Database: ", err);
-  });
-
-const tokenSchema = new Schema(
-  {
-    userName: String,
-    accessToken: String,
-    refreshToken: String,
-  },
-  { timestamps: true, strict: true }
-);
-
-const Token = mongoose.model("tokens", tokenSchema);
-
-const userSchema = new Schema(
-  {
-    firstName: String,
-    lastName: String,
-    age: Number,
-    address: String,
-    email: String,
-  },
-  {
-    timestamps: true,
-    strict: true,
+// Signup route
+router.post("/signup", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = new User({ username, password });
+    await user.save();
+    res.status(201).json({ message: "New user registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
   }
-);
+});
 
-const User = mongoose.model("users", userSchema);
+// Login route
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findOne({ username });
 
-module.exports = {
-  Token,
-  User,
-};
+    if (!user) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_SECRET
+    );
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+module.exports = router;

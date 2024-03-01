@@ -21,28 +21,28 @@ const userSchema = mongoose.Schema(
   { timestamps: true, strict: true }
 );
 
-userSchema.pre("save", async (next) => {
-  try {
-    if (!this.isModified("password")) {
-      return next();
-    }
+// userSchema.pre("save", async (next) => {
+//   try {
+//     if (!this.isModified("password")) {
+//       return next();
+//     }
 
-    const hashedPassword = await bcrypt.hash(this.password, 10);
-    this.password = hashedPassword;
+//     const hashedPassword = await bcrypt.hash(this.password, 10);
+//     this.password = hashedPassword;
 
-    next();
-  } catch (err) {
-    return next(err);
-  }
-});
+//     next();
+//   } catch (err) {
+//     return next(err);
+//   }
+// });
 
-userSchema.methods.comparePassword = async (candidatePassword) => {
-  try {
-    return await bcrypt.compare(candidatePassword, this.password);
-  } catch (err) {
-    return false;
-  }
-};
+// userSchema.methods.comparePassword = async (candidatePassword) => {
+//   try {
+//     return await bcrypt.compare(candidatePassword, this.password);
+//   } catch (err) {
+//     return false;
+//   }
+// };
 
 const User = mongoose.model("User", userSchema);
 
