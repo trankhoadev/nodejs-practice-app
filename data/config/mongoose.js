@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 if (!process.env.DB_MONGOOSE) {
-  throw new Error("DB_MONGOOSE environment variable is not defined!");
+  throw new Error("DB_MONGOOSE environment still not setup yet!");
 }
 
 mongoose
@@ -14,37 +14,5 @@ mongoose
     console.log("Connect to Mongoose successfully!");
   })
   .catch((err) => {
-    console.error("Error when connect to Database: , err");
+    console.error("Error when connect to Mongoose: ", err);
   });
-
-const tokenSchema = new Schema(
-  {
-    userName: String,
-    accessToken: String,
-    refreshToken: String,
-  },
-  { timestamps: true, strict: true }
-);
-
-const Token = mongoose.model("tokens", tokenSchema);
-
-const userSchema = new Schema(
-  {
-    firstName: String,
-    lastName: String,
-    age: Number,
-    address: String,
-    email: String,
-  },
-  {
-    timestamps: true,
-    strict: true,
-  }
-);
-
-const User = mongoose.model("users", userSchema);
-
-module.exports = {
-  Token,
-  User,
-};
