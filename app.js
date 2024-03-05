@@ -13,6 +13,9 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const authRouter = require("./routes/authRouter");
 
+/* middlewares */
+const { isAuth } = require("./middlewares/authMiddleware");
+
 /* Custom declare variable and import */
 const app = express();
 
@@ -25,6 +28,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
+app.get("/test", isAuth, (req, res) => {
+  console.log(req.user);
+  const { data } = req.user;
+  res.send(`Welcome to my app: ${data.username}`);
+});
 
 app.use((req, res, next) => {
   const error = new Error("Uri not found!");
