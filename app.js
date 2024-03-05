@@ -29,9 +29,8 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.get("/test", isAuth, (req, res) => {
-  console.log(req.user);
   const { data } = req.user;
-  res.send(`Welcome to my app: ${data.username}`);
+  res.send(data);
 });
 
 app.use((req, res, next) => {

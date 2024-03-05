@@ -1,6 +1,9 @@
 const User = require("../../models/User.model");
 const jwtUtils = require("../../utils/jwtUtils");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = process.env.JWT_SECRET;
+const expiredTime = process.env.EXPIRE_TIME;
 
 const postLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -13,7 +16,7 @@ const postLogin = async (req, res) => {
         message: "Invalid username or password!",
       });
     }
-    console.log(password, user);
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -22,7 +25,7 @@ const postLogin = async (req, res) => {
       });
     }
 
-    const token = jwtUtils.generateToken(user);
+    const token = await jwtUtils.generateToken(user, JWT_SECRET, expiredTime);
 
     res.json({ token });
   } catch (err) {
@@ -38,7 +41,6 @@ const postCreateAccount = async (req, res) => {
 
   try {
     const isExistingUser = await User.findOne({ username });
-    console.log(isExistingUser);
 
     if (isExistingUser) {
       return res.status(400).json({
@@ -52,7 +54,7 @@ const postCreateAccount = async (req, res) => {
 
     await newUser.save();
 
-    const token = jwtUtils.generateToken(newUser);
+    const token = await jwtUtils.generateToken(newUser, JWT_SECRET, expiredTime);
 
     res.status(201).json({ token });
   } catch (err) {
